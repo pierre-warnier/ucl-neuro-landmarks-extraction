@@ -134,7 +134,7 @@ if len(data) >= 1 :
                         t_file.write(file.read())
                         video_processing(file, t_file, temp_dir, upd_indices)
                         #t_file.flush() 
-                zip = shutil.make_archive('output_filename', 'zip', temp_dir)
+                zip = shutil.make_archive(f'{dat}.zip', 'zip', temp_dir)
                 st.download_button(
                     label="Download videos as .zip",
                     data=zip,
