@@ -138,7 +138,7 @@ if len(data) >= 1 :
                 st.download_button(
                     label="Download videos as .zip",
                     data=zip,
-                    file_name=f'{dat}.zip'
+                    file_name=f'{dat}.zip',
                     mime='application/zip')
                 
                     
