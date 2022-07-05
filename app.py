@@ -139,7 +139,7 @@ if len(data) >= 1 :
                     label="Download videos as .zip",
                     data=zip,
                     file_name=f'analysis_',
-                    mime='video/mp4')
+                    mime='application/zip')
                 
                     
                     
