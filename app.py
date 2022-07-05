@@ -9,7 +9,7 @@ from zipfile import ZipFile
 import os
 from datetime import datetime
 import tempfile
-import zipfile
+from zipfile import ZipFile
 import shutil
 import copy
 
@@ -34,6 +34,7 @@ height, width, _ = image1.shape
 result = face_mesh.process(image1)
 #Black background
 canvas = np.zeros((image1.shape[0], image1.shape[1], 1), dtype = "uint8")
+      
 
 def remove_index(i_drop_str, d_indexes):
     i_drop_l = i_drop_str.split(',')
@@ -82,7 +83,7 @@ def video_processing(file, t_file, directory, indexes):
         out.write(canvas)
     cap.release()
     out.release()
-    
+    return out_path
 
 
 st.subheader('Step 1: Upload video')
@@ -128,19 +129,24 @@ if len(data) >= 1 :
             st.subheader('Step 3: Download your video... Enjoy!')
             dateTimeObj = datetime.now()
             dat = dateTimeObj.strftime("%Y-%m-%d-%H:%M:%S")
+            out_files = []
             with tempfile.TemporaryDirectory(prefix=dat) as temp_dir:
                 for file in data:
                     with tempfile.NamedTemporaryFile() as t_file:
                         t_file.write(file.read())
-                        video_processing(file, t_file, temp_dir, upd_indices)
+                        out_path = video_processing(file, t_file, temp_dir, upd_indices)
+                        out_files.append(out_path)
                         #t_file.flush() 
-                zip = shutil.make_archive(f'{dat}.zip', 'zip', temp_dir)
+                        # writing files to a zipfile
+            with ZipFile(f'{dat}.zip','w') as zip:
+                # writing each file one by one
+                for file in out_files:
+                    zip.write(file)  
                 st.download_button(
                     label="Download videos as .zip",
                     data=zip,
-                    file_name=f'{dat}.zip',
                     mime='application/zip')
-                
+            
                     
                     
     
