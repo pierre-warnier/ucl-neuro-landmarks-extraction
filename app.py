@@ -142,10 +142,10 @@ if len(data) >= 1 :
                 # writing each file one by one
                 for file in out_files:
                     zip.write(file)  
-                st.download_button(
-                    label="Download videos as .zip",
-                    data=zip,
-                    mime='application/zip')
+            st.download_button(
+                label="Download videos as .zip",
+                data=f'{dat}.zip',
+                mime='application/zip')
             
                     
                     
