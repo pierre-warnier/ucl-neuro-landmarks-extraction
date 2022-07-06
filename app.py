@@ -121,7 +121,6 @@ if len(data) >= 1 :
         if preview:
             try:
                 upd_indices = remove_index(i_drop_str, landmark_points_68)
-                print(upd_indices)
             except ValueError as e:
                 error = '<p style="font-family:Courier; color:Red; font-size: 20px; font-weight:bold;">Index not detected on face landmarks</p>'
                 st.markdown(error, unsafe_allow_html=True)
@@ -145,14 +144,12 @@ if len(data) >= 1 :
                     t_file.write(file.read())
                     out_path = video_processing(file, t_file, dest_path, upd_indices, pixel_size=pixel)
                     out_files.append(out_path)
-                    print(out_path)
                     #t_file.flush() 
                     # writing files to a zipfile
 
             with ZipFile(f'{dest_path}.zip','w') as zip:
                 # writing each file one by one
                 for file in out_files:
-                    print(os.path.exists(file))
                     zip.write(file)
             with open(f'{dest_path}.zip', 'rb') as zip:
                 st.download_button(
