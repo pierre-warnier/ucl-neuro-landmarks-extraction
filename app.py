@@ -12,6 +12,7 @@ from zipfile import ZipFile
 import shutil
 import copy
 import glob
+import pytz
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
@@ -134,7 +135,8 @@ if len(data) >= 1 :
         if next:
             upd_indices = remove_index(i_drop_str, landmark_points_68)
             st.subheader('Step 3: Download your video... Enjoy!')
-            dateTimeObj = datetime.now()
+            timezone = pytz.timezone('Europe/Brussels')
+            dateTimeObj = datetime.now(timezone)
             out_files = []
             dest_path = dateTimeObj.strftime("%Y%m%d_%H%M%S")            
             os.mkdir(dest_path)
