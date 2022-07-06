@@ -2,5 +2,4 @@ opencv-contrib-python-headless
 numpy
 matplotlib
 mediapipe
-validators
 streamlit
