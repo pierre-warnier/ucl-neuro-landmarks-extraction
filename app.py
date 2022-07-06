@@ -114,6 +114,9 @@ if len(data) >= 1 :
         canvas = np.zeros((image1.shape[0], image1.shape[1], 1), dtype = "uint8")
         if reset:
             canvas = dot_face(landmarks_list, canvas, width, height) 
+            plt.imshow(canvas) # To investigate
+            fig = plt.show()
+            st.pyplot(fig)
         if preview:
             try:
                 upd_indices = remove_index(i_drop_str, landmark_points_68)
