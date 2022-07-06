@@ -30,9 +30,15 @@ st.text('Work hard... Play hard')
 # Face Mesh
 mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh()
+#select sidebar
+add_selectbox = st.sidebar.selectbox("Select model",("68 lanmarks", "468 lanmarks"))
+initial_iamge = './data/image3.png'
 landmark_points_68 = [162,234,93,58,172,136,149,148,152,377,378,365,397,288,323,454,389,71,63,105,66,107,336,
                 296,334,293,301,168,197,5,4,75,97,2,326,305,33,160,158,133,153,144,362,385,387,263,373,
-                380,61,39,37,0,267,269,291,405,314,17,84,181,78,82,13,312,308,317,14,87]    
+                380,61,39,37,0,267,269,291,405,314,17,84,181,78,82,13,312,308,317,14,87] 
+if add_selectbox == "468 lanmarks":   
+    landmark_points_68 = list(range(0, 468))
+    initial_iamge = './data/image2.png'
 
 def remove_index(i_drop_str, d_indexes):
     i_drop_l = [int(i.strip()) for i in i_drop_str.split(',') if i != ''] 
@@ -44,7 +50,7 @@ def dot_face(landmarks_list, canvas, width, height, indexes=landmark_points_68, 
             pt1 = facial_landmarks.landmark[i]
             x = int(pt1.x * width)
             y = int(pt1.y * height) 
-            cv2.circle(canvas, (x, y), pxl, (100, 100, 0), -1) 
+            cv2.circle(canvas, (x, y), pxl, (255,255,255), -1)
     return canvas 
 
 def video_processing(file, t_file, directory, indexes, pixel_size):
@@ -73,6 +79,24 @@ def video_processing(file, t_file, directory, indexes, pixel_size):
     out.release()
     return out_path
 
+def image_processing(file, t_file, dest_directory, upd_indices, pixel_size):
+    image = cv2.imread(t_file.name)
+    height, width, _ = image.shape
+    # Facial landmarks
+    landmarks_list = face_mesh.process(image)
+    #Black background
+    canvas = np.zeros((image.shape[0], image.shape[1], 1), dtype = "uint8")
+    canvas = dot_face(landmarks_list, canvas, width, height, indexes=upd_indices, pxl=pixel_size)
+    cv2.imwrite(f'{dest_directory}/{file.name}', canvas)
+    return f'{dest_directory}/{file.name}'
+
+def image_or_video(s):
+    ext = s.split('/')[-1].split('.')[-1]
+    if ext in {'jpg', 'jpeg', 'png', 'bmp'}:
+        return 'image'
+    elif ext in {'mp4', 'm4v', 'webm', 'avi', 'mov'}:
+        return 'video'
+
 def download_callback(dest_path):
     shutil.rmtree(dest_path)
     os.remove(f"{dest_path}.zip")
@@ -83,7 +107,7 @@ data = st.file_uploader("Upload a video", type=None, accept_multiple_files=True)
 if len(data) >= 1 :
     with st.container():
         st.subheader('List of facial indexes')
-        st.image('./data/image3.png')
+        st.image(initial_iamge)
 
     with st.container():
         st.subheader('Step 2: Set parameters and preview results')
@@ -142,8 +166,14 @@ if len(data) >= 1 :
             for file in data:
                 with tempfile.NamedTemporaryFile() as t_file:
                     t_file.write(file.read())
-                    out_path = video_processing(file, t_file, dest_path, upd_indices, pixel_size=pixel)
-                    out_files.append(out_path)
+                    out_path = None
+                    file_type = image_or_video(file.name)
+                    if file_type == 'image':
+                        out_path = image_processing(file, t_file, dest_path, upd_indices, pixel_size=pixel)
+                    elif file_type == 'video':
+                        out_path = video_processing(file, t_file, dest_path, upd_indices, pixel_size=pixel)
+                    if out_path is not None:
+                        out_files.append(out_path)
                     #t_file.flush() 
                     # writing files to a zipfile
 
