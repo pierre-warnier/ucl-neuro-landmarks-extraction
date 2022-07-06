@@ -73,7 +73,6 @@ def video_processing(file, t_file, directory, indexes, pixel_size):
         if not landmarks_list.multi_face_landmarks:
             continue            
         canvas = dot_face(landmarks_list, canvas, width, height, indexes=upd_indices, pxl=int(pixel_size))
-
         out.write(canvas)
     cap.release()
     out.release()
@@ -121,7 +120,7 @@ if len(data) >= 1 :
         with col2:        
             preview =  st.button('Preview')
         with col3:
-            next = st.button('Next')
+            next = st.button('Process file')
 
     with st.container():
         try:
